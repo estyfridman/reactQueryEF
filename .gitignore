@@ -3,10 +3,8 @@
 # dependencies
 /node_modules
 /next.config.js
-package-lock.json
-package.json
 next-env.d.ts
-next.config.js
+next.config.mjs
 /.pnp
 .pnp.js
 .yarn/install-state.gz

@@ -24,6 +24,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
     try {
+        console.log('starting delete function');
         const { id } = params;
 
         if (!ObjectId.isValid(id)) {

@@ -17,13 +17,14 @@ export default function Example() {
       mutationFn: deleteRecipe,
       onMutate: async (id: string) => {
           setIsMutating(true);
+          console.log("Mutating");
           await queryClient.cancelQueries({ queryKey: ['recipes'] })
           const previousRecipes = queryClient.getQueryData(['recipes'])
           queryClient.setQueryData(['recipes'], (old: Recipe[]) => old.filter((recipe: Recipe) => recipe._id !== id))
           return { previousRecipes }
       },
       onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['recipes'] }); setIsMutating(false) },
-  })
+    })
 
   const createRecipeMutation = useMutation({
     mutationFn: createRecipe,
@@ -56,7 +57,7 @@ const updateRecipeMutation = useMutation({
 
     return (
       <div>
-        { (isLoading || isFetching || isMutating ) && (<Loading/>)}
+        {/* { (isLoading || isFetching || isMutating ) && (<Loading/>)} */}
         <h1> All Recipes</h1>
         { data && (
           data.map((recipe, index) => (

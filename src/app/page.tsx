@@ -1,12 +1,12 @@
 'use client';
 
-import Example from '@/app/components/Example'
+import RecipeList from '@/app/components/recipesList/RecipesList'
 
 export default function Home() {
   return (
       <div>
         home page
-        <Example/>
+        <RecipeList/>
       </div>
   );
 }
