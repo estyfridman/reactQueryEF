@@ -6,7 +6,7 @@ import { UseMutationResult } from '@tanstack/react-query';
 
 export type RecipeCardProps = {
     recipe: Recipe;
-    onDelete: UseMutationResult<boolean, Error, string, { previousRecipes: unknown;}>;
+    onDelete: (id: string) => void;
     onUpdate: (recipe: Recipe) => void;
   };
 
@@ -31,10 +31,13 @@ export default function RecipeCard({ recipe, onDelete, onUpdate }: RecipeCardPro
             </p>	        
             <p className={styles.description}>{recipe.shortDescription}</p>
             <button className={styles.readMore} >Read more</button>
-            <button onClick={()=> onDelete.mutate(recipe._id || '')} className={styles.readMore}>delete</button>
+            <button onClick={()=> onDelete(recipe._id || '')} className={styles.readMore}>delete</button>
             <button onClick={()=> onUpdate(recipe)} className={styles.readMore}>Edit</button>
-
           </div>
         </div>
       );
 }
+
+// הצעת תיקון של GPT
+// onDelete={(id: string) => deleteMutation.mutate(id)}
+// onUpdate={(recipe: Recipe) => updateRecipeMutation.mutate(recipe)}

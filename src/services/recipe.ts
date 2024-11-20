@@ -67,6 +67,7 @@ export const deleteRecipe = async (id: string): Promise<boolean> => {
 
 export const updateRecipe = async (recipe: Recipe): Promise<boolean> => {
     try {
+        console.log(recipe);
         const response = await http.patch("/recipes", recipe);
         return response.data; 
     } catch (error) {

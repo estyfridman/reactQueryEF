@@ -49,9 +49,8 @@ const updateRecipeMutation = useMutation({
             <RecipeCard
               key={index}
               recipe={recipe} 
-              onDelete={deleteMutation}
+              onDelete={()=>deleteMutation.mutate(recipe._id || '1')}
               onUpdate={(recipe: Recipe) => updateRecipeMutation.mutate(recipe)}
-
             />
           )
         ))}
