@@ -25,20 +25,6 @@ export default function RecipeList() {
       onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['recipes'] }); setIsMutating(false) },
     })
 
-  const createRecipeMutation = useMutation({
-    mutationFn: createRecipe,
-    onMutate: async (recipe: Recipe) => {
-        setIsMutating(true);
-        await queryClient.cancelQueries({ queryKey: ['recipes'] })
-        const previousRecipes = queryClient.getQueryData(['recipes'])
-        queryClient.setQueryData(['recipes'], (old: Recipe[]) => [...old, recipe])
-        return { previousRecipes }
-    },
-    onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['recipes'] }); setIsMutating(false);
-    },
-})
-
 const updateRecipeMutation = useMutation({
   mutationFn: (recipe : Recipe ) => updateRecipe(recipe),
   onMutate: async (recipe : Recipe ) => {

@@ -1,10 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createRecipe } from "@/services/recipe";
 import styles from "./addRecipe.module.css";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Recipe } from '@/types/types'
 
 const recipeSchema = z.object({
   recipe_name: z.string().min(1, "Name is required"),
@@ -26,6 +28,26 @@ const AddRecipe: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [ingredientError, setIngredientError] = useState<string | null>(null);
+  const [isMutating, setIsMutating] = useState(false);
+  const queryClient = useQueryClient()
+
+  const createRecipeMutation = useMutation({
+    mutationFn: createRecipe,
+    onMutate: async (recipe: Recipe) => {
+        setIsMutating(true);
+        await queryClient.cancelQueries({ queryKey: ['recipes'] })
+        const previousRecipes = queryClient.getQueryData(['recipes'])
+        queryClient.setQueryData(['recipes'], (old: Recipe[]) => [...old || [], recipe])
+        return { previousRecipes }
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['recipes'] }); setIsMutating(false);
+        setMessage("Recipe saved successfully!");
+    },
+    onError: () => {
+        setMessage("Failed to save recipe. Please try again.");
+    },
+})
 
   const handleIngredientChange = (index: number, value: string) => {
     const updatedIngredients = [...ingredients];
@@ -57,22 +79,12 @@ const AddRecipe: React.FC = () => {
       shortDescription: data.shortDescription || "",
     };
 
-    try {
-      const r:any = await createRecipe(newRecipe);
-   
-      let idd =r.result.insertedId
-      const storedRecipes = JSON.parse(localStorage.getItem("recipes") || "null");
-      if (storedRecipes) {
-        storedRecipes.documents.push({"_id":idd,...newRecipe});
-        localStorage.setItem("recipes", JSON.stringify(storedRecipes));
-      }
-      setMessage("Recipe saved successfully!");
-      reset();
-      setIngredients([""]);
-      setIngredientError(null); 
-    } catch (error) {
-      setMessage("Failed to save recipe. Please try again.");
-    }
+    createRecipeMutation.mutate(newRecipe, {
+        onSuccess: () => {
+          reset();
+          setIngredients([""]);
+        },
+    });
   };
 
   const handleFormSubmit = async () => {
