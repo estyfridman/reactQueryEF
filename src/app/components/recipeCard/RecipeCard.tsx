@@ -31,8 +31,8 @@ export default function RecipeCard({ recipe, onDelete, onUpdate }: RecipeCardPro
             </p>	        
             <p className={styles.description}>{recipe.shortDescription}</p>
             <button className={styles.readMore} >Read more</button>
-            <button onClick={()=>onDelete}>delete</button>
-            <button onClick={()=>onUpdate(recipe)}>Edit</button>
+            <button onClick={()=>onDelete} className={styles.readMore}>delete</button>
+            <button onClick={()=>onUpdate(recipe)} className={styles.readMore}>Edit</button>
 
           </div>
         </div>

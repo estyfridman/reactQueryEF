@@ -40,12 +40,12 @@ export default function Example() {
 })
 
 const updateRecipeMutation = useMutation({
-  mutationFn: ({ id, recipe }: { id: string, recipe: Recipe }) => updateRecipe(recipe),
-  onMutate: async ({ id, recipe }: { id: string, recipe: Recipe }) => {
+  mutationFn: (recipe : Recipe ) => updateRecipe(recipe),
+  onMutate: async (recipe : Recipe ) => {
       setIsMutating(true);
       await queryClient.cancelQueries({ queryKey: ['recipes'] })
       const previousRecipes = queryClient.getQueryData(['recipes'])
-      queryClient.setQueryData(['recipes'], (old: Recipe[]) => old.map((oldRecipe: any) => oldRecipe._id === id ? recipe : oldRecipe))
+      queryClient.setQueryData(['recipes'], (old: Recipe[]) => old.map((oldRecipe: any) => oldRecipe._id === recipe._id ? recipe : oldRecipe))
       return { previousRecipes }
   },
   onSuccess: () => {
@@ -64,7 +64,7 @@ const updateRecipeMutation = useMutation({
               key={index}
               recipe={recipe} 
               onDelete={deleteMutation}
-              onUpdate={(recipe: Recipe) => updateRecipeMutation.mutate({ id: recipe._id!, recipe })}
+              onUpdate={(recipe: Recipe) => updateRecipeMutation.mutate(recipe)}
 
             />
           )
